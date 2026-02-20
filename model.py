@@ -1,0 +1,24 @@
+import torch.nn as nn
+import torchvision.models as models
+
+
+def get_model(num_classes):
+    model = models.resnet18(pretrained=True)
+
+    num_features = model.fc.in_features
+    model.fc = nn.Linear(num_features, num_classes)
+
+    return model
+
+
+def freeze_backbone(model):
+    for param in model.parameters():
+        param.requires_grad = False
+
+    for param in model.fc.parameters():
+        param.requires_grad = True
+
+
+def unfreeze_all(model):
+    for param in model.parameters():
+        param.requires_grad = True

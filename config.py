@@ -1,0 +1,14 @@
+SEED = 42
+
+NUM_SAMPLES = 200
+IMAGE_SIZE = 64
+NUM_CLASSES = 2
+
+BATCH_SIZE = 16
+LR_HEAD = 1e-3
+LR_FINE_TUNE = 1e-4
+EPOCHS = 10
+
+CHECKPOINT_PATH = "checkpoints/checkpoint.pt"
+
+DEVICE = "cuda"
