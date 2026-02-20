@@ -55,8 +55,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer,
     mode="min",
     patience=2,
-    factor=0.5,
-    verbose=True
+    factor=0.5
 )
 
 # ----------------------------
@@ -99,8 +98,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer,
     mode="min",
     patience=2,
-    factor=0.5,
-    verbose=True
+    factor=0.5
 )
 
 for epoch in trange(config.EPOCHS, desc="Fine-Tuning"):

@@ -1,9 +1,10 @@
 import torch.nn as nn
 import torchvision.models as models
+from torchvision.models import ResNet18_Weights
 
 
 def get_model(num_classes):
-    model = models.resnet18(pretrained=True)
+    model = models.resnet18(weights=ResNet18_Weights.DEFAULT)
 
     num_features = model.fc.in_features
     model.fc = nn.Linear(num_features, num_classes)
