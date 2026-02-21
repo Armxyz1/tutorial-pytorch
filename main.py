@@ -7,7 +7,8 @@ import config
 from dataset import ShapeDataset, get_transforms
 from model import get_model, freeze_backbone, unfreeze_all
 from train import train_one_epoch
-from utils import set_seed, save_checkpoint
+from utils import inference, set_seed, save_checkpoint
+from losses import LabelSmoothingCrossEntropy
 
 
 def count_trainable_params(model):
@@ -44,7 +45,9 @@ print(f"Trainable parameters (head only): {count_trainable_params(model)}")
 # ----------------------------
 # Loss + Optimizer
 # ----------------------------
-criterion = nn.CrossEntropyLoss()
+
+# Label Smoothing Loss (prevents overconfidence)
+criterion = LabelSmoothingCrossEntropy(smoothing=0.1)
 
 optimizer = torch.optim.Adam(
     filter(lambda p: p.requires_grad, model.parameters()),
@@ -55,7 +58,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer,
     mode="min",
     patience=2,
-    factor=0.5
+    factor=0.1
 )
 
 # ----------------------------
@@ -98,7 +101,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer,
     mode="min",
     patience=2,
-    factor=0.5
+    factor=0.1
 )
 
 for epoch in trange(config.EPOCHS, desc="Fine-Tuning"):
@@ -115,3 +118,10 @@ for epoch in trange(config.EPOCHS, desc="Fine-Tuning"):
     )
 
 print("\nTraining complete.\n")
+
+# Inference
+
+
+preds, labels = inference(model, loader, device)
+accuracy = (preds == labels).sum().item() / len(labels)
+print(f"Inference Accuracy: {accuracy:.4f}")

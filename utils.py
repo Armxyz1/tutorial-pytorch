@@ -33,3 +33,21 @@ def load_checkpoint(model, optimizer, scheduler, path):
     scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
 
     return checkpoint["epoch"] + 1
+
+def inference(model, dataloader, device):
+    model.eval()
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for images, labels in dataloader:
+            images = images.to(device)
+            labels = labels.to(device)
+
+            outputs = model(images)
+            _, preds = torch.max(outputs, 1)
+
+            all_preds.append(preds.cpu())
+            all_labels.append(labels.cpu())
+
+    return torch.cat(all_preds), torch.cat(all_labels)
